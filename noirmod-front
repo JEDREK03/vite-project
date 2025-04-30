@@ -1,1 +1,32 @@
+// Ejemplo: Página de Productos (src/components/ProductList.tsx)
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
+const ProductList: React.FC = () => {
+  const [products, setProducts] = React.useState<Product[]>([]);
+
+  React.useEffect(() => {
+    axios.get('http://localhost:5000/api/products')
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  return (
+    <div className="product-grid" role="grid" aria-label="Lista de productos">
+      {products.map((product) => (
+        <div key={product.id} className="product-card">
+          <img src={product.image} alt={product.name} />
+          <h3>{product.name}</h3>
+          <p>${product.price}</p>
+          <button 
+            onClick={() => navigate(`/product/${product.id}`)}
+            aria-label={`Ver detalles de ${product.name}`}
+          >
+            Ver Detalles
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}; 
